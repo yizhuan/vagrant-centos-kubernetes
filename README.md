@@ -3,8 +3,10 @@ CentOS box
 Username: root
 Password: vagrant
 
+```
 [root@master kernel]# cat /etc/centos-release
 CentOS Linux release 7.5.1804 (Core)
+```
 
 # Vagrant Centos kubernetes cluster
 - docker 1.13.1
