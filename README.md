@@ -34,6 +34,7 @@ kube-system   kube-scheduler-master            1/1       Running   0          23
 
 ## Prerequisites 
 - Vagrant 2.1.4 (with NFS support)
+- VirtualBox
 
 #### Note for Windows
 
