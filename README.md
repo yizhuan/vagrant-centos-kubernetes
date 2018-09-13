@@ -1,35 +1,37 @@
+# OS Info
+CentOS box
+Username: root
+Password: vagrant
+
+[root@master kernel]# cat /etc/centos-release
+CentOS Linux release 7.5.1804 (Core)
+
 # Vagrant Centos kubernetes cluster
-- Centos 7.2 amd64
-- docker 1.10
-- kubeadm 1.5
+- docker 1.13.1
+- kubeadm 1.11
+
 ```
-NAME                                    READY     STATUS    RESTARTS   AGE
-dummy-2088944543-36vp6                  1/1       Running   0          1h
-etcd-master                             1/1       Running   0          1h
-kube-apiserver-master                   1/1       Running   0          1h
-kube-controller-manager-master          1/1       Running   0          1h
-kube-discovery-1150918428-dkdke         1/1       Running   0          1h
-kube-dns-654381707-a4yey                3/3       Running   0          1h
-kube-proxy-moijj                        1/1       Running   0          1h
-kube-proxy-pwjfw                        1/1       Running   0          1h
-kube-proxy-vicnd                        1/1       Running   0          1h
-kube-scheduler-master                   1/1       Running   0          1h
-kubernetes-dashboard-3203700628-stzjl   1/1       Running   0          1h
-weave-net-01aay                         2/2       Running   0          1h
-weave-net-eurrr                         2/2       Running   0          1h
-weave-net-ph7l3                         2/2       Running   0          1h
+[root@master ~]# kubectl get pods --all-namespaces -o=wide
+NAMESPACE     NAME                             READY     STATUS    RESTARTS   AGE       IP                NODE      NOMINATED NODE
+kube-system   coredns-78fcdf6894-7xzqc         1/1       Running   0          24m       10.244.0.2        master    <none>
+kube-system   coredns-78fcdf6894-lrztv         1/1       Running   0          24m       10.244.0.3        master    <none>
+kube-system   etcd-master                      1/1       Running   0          23m       192.168.100.20    master    <none>
+kube-system   kube-apiserver-master            1/1       Running   0          23m       192.168.100.20    master    <none>
+kube-system   kube-controller-manager-master   1/1       Running   0          23m       192.168.100.20    master    <none>
+kube-system   kube-flannel-ds-amd64-6r748      1/1       Running   0          17m       192.168.100.22   node-2    <none>
+kube-system   kube-flannel-ds-amd64-gn4nk      1/1       Running   0          24m       192.168.100.20    master    <none>
+kube-system   kube-flannel-ds-amd64-s2j9t      1/1       Running   1          21m       192.168.100.21   node-1    <none>
+kube-system   kube-proxy-bwcfx                 1/1       Running   0          17m       192.168.100.22   node-2    <none>
+kube-system   kube-proxy-cnlgv                 1/1       Running   0          24m       192.168.100.20    master    <none>
+kube-system   kube-proxy-g8hl5                 1/1       Running   0          21m       192.168.100.21   node-1    <none>
+kube-system   kube-scheduler-master            1/1       Running   0          23m       192.168.100.20    master    <none>
 ```
 
 ## plugins
-- weave-net
-- dashboard
+- flannel
 
-## Extra plugins
-- Grafana + InfluxDB (must be activated in config.rb)
-![grafana](https://cloud.githubusercontent.com/assets/3530471/20548729/e84b6756-b160-11e6-8bd6-a78eb2a95d88.png)
-
-## Prerequisites
-- Vagrant 1.8 (with NFS support)
+## Prerequisites 
+- Vagrant 2.1.4 (with NFS support)
 
 #### Note for Windows
 
@@ -38,20 +40,20 @@ weave-net-ph7l3                         2/2       Running   0          1h
 
 ## Installation
 ```bash
-git pull https://github.com/JulienLenne/vagrant-centos-kubernetes.git
+git clone https://github.com/yizhuan/vagrant-centos-kubernetes.git
 cd vagrant-centos-kubernetes/
 vagrant up
 ```
 ## Clean-up
 ```bash
-vagrant destroy
+vagrant destroy -f
 ```
 
 ## Configuration
 config.rb
 ```ruby
 # If you change, Keep the structure with the dot. [0-9 a-f]
-$token = "56225f.9096af3559800a6a"
+$token = "56225f.9096af3559802a6a"
 # Total memory of master
 $master_memory = 1536
 # Increment to have more nodes
@@ -67,21 +69,11 @@ $grafana = false
 # Note : You need to have kubectl on the host
 # http://kubernetes.io/docs/user-guide/prereqs/
 # Or use ssh (vagrant ssh master)
-# If you use SSH to connect on master you should remove
-# "--kubeconfig admin.conf" argument
 # Cluster info
-kubectl cluster-info --kubeconfig admin.conf
+kubectl cluster-info
 # Get nodes
-kubectl get nodes --kubeconfig admin.conf
+kubectl get nodes
 # Get system pods
-kubectl get pods --namespace=kube-system --kubeconfig admin.conf
-# Go to dashboard (require kubectl on the host, or use master
-# ip address to access to the ui)
-kubectl proxy --kubeconfig admin.conf # http://localhost:8001/ui on host
+kubectl get pods --namespace=kube-system
 ## Full documentation : http://kubernetes.io/docs/
 ```
-
-### Next features
-- Can add more master
-- Can add more etcd
-- Include flocker with full support of ZFS

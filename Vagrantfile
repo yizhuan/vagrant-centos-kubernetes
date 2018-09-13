@@ -1,11 +1,10 @@
-
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
 load 'config.rb'
 
 def workerIP(num)
-  return "172.16.78.#{num+250}"
+  return "192.168.100.#{num+20}"
 end
 
 VAGRANTFILE_API_VERSION = "2"
@@ -17,7 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
   end
-  ip = "172.16.78.250"
+  ip = "192.168.100.20"
   config.vm.box = "centos/7"
   config.vm.synced_folder ".", "/shared", type: "nfs"
   config.vm.define "master" do |master|
@@ -44,7 +43,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         s.inline = "sh /vagrant/install.sh $1 $2 $3 $4"
         if i == $worker_count
           s.args = ["-node", "#{ip}", "-last", "#{$token}"]
-          #EXTRA ADDONS
+          #EXTRA ADDONS 
           if $grafana
             node.vm.provision :shell, :inline => "kubectl --kubeconfig /shared/admin.conf apply -f /vagrant/influxdb/"
           end
