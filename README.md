@@ -8,7 +8,7 @@ Password: vagrant
 CentOS Linux release 7.5.1804 (Core)
 ```
 
-# Vagrant Centos kubernetes cluster
+# Vagrant CentOS Kubernetes cluster
 - docker 1.13.1
 - kubeadm 1.11
 
